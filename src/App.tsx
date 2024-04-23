@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Input } from '@/components/Input';
-
 
 export default function App() {
   return (
