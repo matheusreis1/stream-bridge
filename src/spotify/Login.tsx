@@ -1,59 +1,76 @@
-import React from 'react';
-import { View, Pressable, Image } from 'react-native';
-import { styles } from '../components/styles';
-import { SPOTIFY_CLIENT_ID } from '@env';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { setItemAsync, getItemAsync } from 'expo-secure-store';
+import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri, useAuthRequest, exchangeCodeAsync } from 'expo-auth-session';
+import { Button } from 'react-native';
 
-const generateRandomString = (length: number) => {
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  const values = crypto.getRandomValues(new Uint8Array(length));
-  return values.reduce((acc, x) => acc + possible[x % possible.length], "");
-}
+WebBrowser.maybeCompleteAuthSession();
 
-const requestUserAuthorization = async () => {
-  const codeVerifier = generateRandomString(64);
-  const sha256 = async (plain: any) => {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(plain);
-    return window.crypto.subtle.digest('SHA-256', data);
-  }
-  const base64encode = (input: any) => {
-    return btoa(String.fromCharCode(...new Uint8Array(input)))
-      .replace(/=/g, '')
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_');
-  }
-  const hashed = await sha256(codeVerifier);
-  const codeChallenge = base64encode(hashed);
+const discovery = {
+  authorizationEndpoint: 'https://accounts.spotify.com/authorize',
+  tokenEndpoint: 'https://accounts.spotify.com/api/token',
+};
+const AUTH_STORAGE_KEY = 'jwtToken';
 
-  const clientId = SPOTIFY_CLIENT_ID;
-  const redirectUri = 'http://localhost:3000/spotify-auth-callback';
+export const SpotifyExpoLogin = () => {
+  const setCachedToken = async (token: string) => setItemAsync(AUTH_STORAGE_KEY, token);
+  const getToken = async () => getItemAsync(AUTH_STORAGE_KEY);
+  const [user, getUser] = useState({});
 
-  const scope = 'user-read-private user-read-email';
-  const authUrl = new URL("https://accounts.spotify.com/authorize")
+  const [authTokens, setAuthTokens] = useState({accessToken: "", refreshToken: ""});
 
-  // generated in the previous step
-  window.localStorage.setItem('code_verifier', codeVerifier);
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      clientId: '2a610295915749f89285d83854787345',
+      scopes: ['user-read-email', 'playlist-modify-public'],
+      usePKCE: true,
+      redirectUri: makeRedirectUri({
+        scheme: 'exp://192.168.68.103:8081'
+      }),
+      responseType: 'code',
+    },
+    discovery
+  );
 
-  const params =  {
-    response_type: 'code',
-    client_id: clientId,
-    scope,
-    code_challenge_method: 'S256',
-    code_challenge: codeChallenge,
-    redirect_uri: redirectUri,
-  }
+  useEffect(() => {
+    const exchange = async (exchangeTokenReq: string) => {
+      try {
+        const exchangeTokenResponse = await exchangeCodeAsync(
+          {
+            clientId: '2a610295915749f89285d83854787345',
+            code: exchangeTokenReq,
+            redirectUri: makeRedirectUri({
+              scheme: 'exp://192.168.68.103:8081'
+            }),
+            extraParams: {
+              code_verifier: request.codeVerifier,
+              grant_type: 'authorization_code',
+            },
+          },
+          discovery
+        );
 
-  authUrl.search = new URLSearchParams(params).toString();
-  window.location.href = authUrl.toString();
-}
+        setAuthTokens({accessToken: exchangeTokenResponse.accessToken, refreshToken: exchangeTokenResponse.refreshToken});
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
 
-export const SpotifyLogin = () => {
-  // TODO: tranform this into a component
+    if (response) {
+      response.type === "success" && exchange(response.params.code);
+
+      response.type === "error" && console.error("error", response.error);
+    }
+  }, [response]);
+
   return (
-    <View>
-      <Pressable onPress={requestUserAuthorization} style={[styles.button, { marginRight: 10 }]}>
-        <Image source={{ uri: 'https://store-images.s-microsoft.com/image/apps.62962.14205055896346606.c235e3d6-fbce-45bb-9051-4be6c2ecba8f.28d7c3cb-0c64-40dc-9f24-53326f80a6dd?h=464' }} style={styles.image} />
-      </Pressable>
-    </View>
+    <Button
+      disabled={!request}
+      title="Login Spotify"
+      onPress={() => {
+        promptAsync();
+      }}
+    />
   );
 }

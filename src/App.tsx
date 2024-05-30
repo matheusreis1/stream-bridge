@@ -1,25 +1,39 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Input } from '@/components/Input';
+import { Pressable, TextInput, Text, View } from 'react-native';
 import { styles } from './components/styles';
-import { SpotifyLogin } from './spotify/Login';
+import { SpotifyExpoLogin } from './spotify/Login';
+import { ITrack } from './types/deezer';
+import { TracksList } from './components/TracksList';
+import { getDeezerTracks } from './services/deezer';
 
 export default function App() {
+  const [playlistUrl, setPlaylistUrl] = React.useState('' as string);
+  const [tracks, setTracks] = React.useState([] as ITrack[]);
+
+  const getTracks = async () => {
+    // TODO: call the function depending on the url
+    // if deezer: deezer
+    // if spotify: spotify
+    // etc...
+
+    const tracks = await getDeezerTracks(playlistUrl);
+
+    setTracks(tracks);
+  }
+
   return (
     <View style={styles.container}>
-      <Input />
+      <TextInput style={styles.textInput} value={playlistUrl} onChange={() => setPlaylistUrl(playlistUrl)} />
+
+      <Pressable style={styles.button} onPress={() => getTracks()}>
+        <Text style={styles.text}>Buscar</Text>
+      </Pressable>
 
       <View style={{ flexDirection: 'row' }}>
-        <SpotifyLogin />
-
-        {/* <Pressable style={[styles.button, { marginRight: 10 }]}>
-          <Image source={{ uri: 'https://store-images.s-microsoft.com/image/apps.62962.14205055896346606.c235e3d6-fbce-45bb-9051-4be6c2ecba8f.28d7c3cb-0c64-40dc-9f24-53326f80a6dd?h=464' }} style={styles.image} />
-        </Pressable>
-
-        <Pressable style={styles.button}>
-          <Image source={{ uri: 'https://store-images.s-microsoft.com/image/apps.62962.14205055896346606.c235e3d6-fbce-45bb-9051-4be6c2ecba8f.28d7c3cb-0c64-40dc-9f24-53326f80a6dd?h=464' }} style={styles.image} />
-        </Pressable> */}
+        <SpotifyExpoLogin />
       </View>
+
+      <TracksList tracks={tracks} />
     </View>
   );
 }

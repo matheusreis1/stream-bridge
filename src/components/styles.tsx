@@ -8,10 +8,27 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
   },
-  image: {
-    width: 28,
-    height: 28,
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
   },
+  textInput: {
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 6,
+    padding: 10,
+    margin: 10,
+    width: '80%'
+  }
 });
