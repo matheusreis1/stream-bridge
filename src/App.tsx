@@ -1,5 +1,5 @@
-import React from 'react';
-import { Pressable, TextInput, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Pressable, TextInput, Text, View, ScrollView } from 'react-native';
 import { styles } from './components/styles';
 import { SpotifyExpoLogin } from './spotify/Login';
 import { ITrack } from './types/deezer';
@@ -7,8 +7,12 @@ import { TracksList } from './components/TracksList';
 import { getDeezerTracks } from './services/deezer';
 
 export default function App() {
-  const [playlistUrl, setPlaylistUrl] = React.useState('' as string);
+  const [playlistUrl, setPlaylistUrl] = React.useState('8245981802');
   const [tracks, setTracks] = React.useState([] as ITrack[]);
+
+  // useEffect(() => {
+  //   getTracks();
+  // }, []);
 
   const getTracks = async () => {
     // TODO: call the function depending on the url
@@ -22,19 +26,17 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <TextInput style={styles.textInput} value={playlistUrl} onChange={() => setPlaylistUrl(playlistUrl)} />
 
       <Pressable style={styles.button} onPress={() => getTracks()}>
         <Text style={styles.text}>Buscar</Text>
       </Pressable>
 
-      <View style={{ flexDirection: 'row' }}>
-        <SpotifyExpoLogin />
-      </View>
+      <SpotifyExpoLogin />
 
-      <TracksList tracks={tracks} />
-    </View>
+      <TracksList tracks={tracks} />      
+    </ScrollView>
   );
 }
 

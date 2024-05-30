@@ -10,6 +10,9 @@ export const TracksList = ({tracks}: {tracks: ITrack[]}) => {
         <TrackItem item={item}/>
       )}
       keyExtractor={(item) => item.id.toString()}
+      numColumns={2}
+      scrollEnabled={false}
+      style={{width: '80%', padding: 10, height: '20%'}}
     />
   )
 }
