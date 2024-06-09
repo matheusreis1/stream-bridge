@@ -12,7 +12,7 @@ export const TracksList = ({tracks}: {tracks: ITrack[]}) => {
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
       scrollEnabled={false}
-      style={{width: '80%', padding: 10, height: '20%'}}
+      style={{width: '100%', padding: 10, height: '20%'}}
     />
   )
 }

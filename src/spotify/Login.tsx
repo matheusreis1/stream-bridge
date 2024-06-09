@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { setItemAsync, getItemAsync } from 'expo-secure-store';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, exchangeCodeAsync } from 'expo-auth-session';
 import { Button } from 'react-native';
+import * as SecureStore from "expo-secure-store";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,10 +14,7 @@ const discovery = {
 const AUTH_STORAGE_KEY = 'jwtToken';
 
 export const SpotifyExpoLogin = () => {
-  const setCachedToken = async (token: string) => setItemAsync(AUTH_STORAGE_KEY, token);
-  const getToken = async () => getItemAsync(AUTH_STORAGE_KEY);
-  const [user, getUser] = useState({});
-
+  const setCachedToken = async (token: string) => SecureStore.setItemAsync(AUTH_STORAGE_KEY, token);
   const [authTokens, setAuthTokens] = useState({accessToken: "", refreshToken: ""});
 
   const [request, response, promptAsync] = useAuthRequest(
@@ -50,6 +47,8 @@ export const SpotifyExpoLogin = () => {
           },
           discovery
         );
+
+        setCachedToken(exchangeTokenResponse.accessToken);
 
         setAuthTokens({accessToken: exchangeTokenResponse.accessToken, refreshToken: exchangeTokenResponse.refreshToken});
       } catch (error) {
