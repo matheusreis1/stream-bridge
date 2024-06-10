@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     width: '100%'
   },
   scrollContainer: {
-    paddingBottom: 60, // Add padding to avoid content being hidden behind the footer
+    paddingBottom: 60,
   },
   button: {
     alignItems: 'center',

@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
-import { Pressable, TextInput, ScrollView, Text } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Pressable, TextInput, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import { styles } from '../components/styles';
 import { SpotifyExpoLogin } from '../spotify/Login';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
 import { addTracksToPlaylist, createPlaylist, fetchProfile, getTrack } from '@/services/spotify';
+import { IconTextInput } from '@/components/InputWithIcon';
 
 export default function CreatePlaylistPage() {
-  const [newPlaylistName, setNewPlaylistName] = React.useState('');
+  const [newPlaylistName, setNewPlaylistName] = useState('');
+  const [playlistCreatedUrl, setPlaylistCreatedUrl] = useState('');
   const { tracks, accessToken } = useContext(TracksToCreateContext);
 
   const submitNewPlaylist = async () => {
@@ -22,11 +24,9 @@ export default function CreatePlaylistPage() {
 
     const playlistCreated = await createPlaylist(accessToken, user.id, newPlaylistName);
 
-    console.log('spotify uris', playlistCreated.id, spotifyUris);
-
-    console.log('accessToken', accessToken);
-
     await addTracksToPlaylist(accessToken, playlistCreated.id, spotifyUris);
+
+    setPlaylistCreatedUrl(playlistCreated.external_urls.spotify);
   }
 
   return (
@@ -42,6 +42,15 @@ export default function CreatePlaylistPage() {
       </Pressable>
 
       <SpotifyExpoLogin />
+
+      {playlistCreatedUrl && (
+        <IconTextInput
+          inputValue={playlistCreatedUrl}
+          initialIconName="copy-all"
+          alternateIconName="check"
+          placeholder=''
+        />
+      )}
     </ScrollView>
   );
 }
