@@ -16,23 +16,42 @@ export async function fetchProfile(token: string): Promise<any> {
   return await result.json();
 }
 
-export const createPlaylist = async (userId: string): Promise<any> => {
-  const { data: { data: tracks } } = await spotifyApi.post(`/users/${userId}/playlists`);
+export const createPlaylist = async (token: string, userId: string, playlistName: string): Promise<any> => {
+  const { data: playlist } = await spotifyApi.post(`/users/${userId}/playlists`, {
+      name: playlistName,
+      public: true,
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  );
   
-  return tracks;
+  console.log('playlist created', playlist);
+
+  return playlist;
 }
 
-export const getTrack = async (playlistId: string): Promise<any> => {
-  const { data: { data: tracks } } = await spotifyApi.get(`/search/${playlistId}/tracks?limit=150`);
-  
-  return tracks;
+export const getTrack = async (token: string, trackName: string): Promise<any> => {
+  const { data: {tracks} } = await spotifyApi.get(`/search?limit=1&q=${trackName}&type=track`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 
+  if (tracks.items.length === 0) {
+    return null;
+  }
+
+  return tracks.items[0];
 }
 
-export const addTracksToPlaylist = async (playlistId: string, tracks: string[]): Promise<any> => {
-  const { data: { data } } = await spotifyApi.post(`/playlist/${playlistId}/tracks`, {
+export const addTracksToPlaylist = async (token: string, playlistId: string, tracks: string[]): Promise<any> => {
+  const { data: { data } } = await spotifyApi.post(`/playlists/${playlistId}/tracks`, {
     uris: tracks,
-    position: 0,
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
   
   return data;

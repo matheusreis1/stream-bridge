@@ -11,7 +11,10 @@ export default function HomePage() {
   return (
     <TracksToCreateProvider >
       <ScrollView contentContainerStyle={styles.container}>
-        <TextInput style={styles.textInput} value={playlistUrl} onChange={() => setPlaylistUrl(playlistUrl)} />
+        <TextInput 
+          style={styles.textInput} 
+          value={playlistUrl} 
+          onChangeText={setPlaylistUrl} />
           <Pressable style={styles.button} onTouchEnd={() => {}}>
             <Link href={{pathname: "/tracks", params: {playlistUrl}}} style={styles.text}>Buscar playlist</Link>
           </Pressable>

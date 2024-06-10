@@ -5,6 +5,7 @@ import { makeRedirectUri, useAuthRequest, exchangeCodeAsync } from 'expo-auth-se
 import { Pressable, Text } from 'react-native';
 import * as SecureStore from "expo-secure-store";
 import { styles } from '@/components/styles';
+import { TracksToCreateContext, TracksToCreateProvider } from '@/context/TracksToCreate';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -15,9 +16,9 @@ const discovery = {
 const AUTH_STORAGE_KEY = 'jwtToken';
 
 export const SpotifyExpoLogin = () => {
-  const setCachedToken = async (token: string) => SecureStore.setItemAsync(AUTH_STORAGE_KEY, token);
-  const [authTokens, setAuthTokens] = useState({accessToken: "", refreshToken: ""});
-
+  // const setCachedToken = async (token: string) => SecureStore.setItemAsync(AUTH_STORAGE_KEY, token);
+  const { accessToken, setAccessToken } = React.useContext(TracksToCreateContext);
+  
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: '2a610295915749f89285d83854787345',
@@ -49,9 +50,11 @@ export const SpotifyExpoLogin = () => {
           discovery
         );
 
-        setCachedToken(exchangeTokenResponse.accessToken);
+        setAccessToken(exchangeTokenResponse.accessToken);
 
-        setAuthTokens({accessToken: exchangeTokenResponse.accessToken, refreshToken: exchangeTokenResponse.refreshToken});
+        // setCachedToken(exchangeTokenResponse.accessToken);
+
+        // setAuthTokens({accessToken: exchangeTokenResponse.accessToken, refreshToken: exchangeTokenResponse.refreshToken});
       } catch (error) {
         console.error("error", error);
       }
