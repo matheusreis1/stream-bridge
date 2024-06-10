@@ -2,8 +2,9 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, exchangeCodeAsync } from 'expo-auth-session';
-import { Button } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import * as SecureStore from "expo-secure-store";
+import { styles } from '@/components/styles';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -23,7 +24,7 @@ export const SpotifyExpoLogin = () => {
       scopes: ['user-read-email', 'playlist-modify-public'],
       usePKCE: true,
       redirectUri: makeRedirectUri({
-        scheme: 'exp://192.168.68.103:8081'
+        scheme: 'exp://192.168.68.107:8081'
       }),
       responseType: 'code',
     },
@@ -38,7 +39,7 @@ export const SpotifyExpoLogin = () => {
             clientId: '2a610295915749f89285d83854787345',
             code: exchangeTokenReq,
             redirectUri: makeRedirectUri({
-              scheme: 'exp://192.168.68.103:8081'
+              scheme: 'exp://192.168.68.107:8081'
             }),
             extraParams: {
               code_verifier: request.codeVerifier,
@@ -64,12 +65,14 @@ export const SpotifyExpoLogin = () => {
   }, [response]);
 
   return (
-    <Button
+    <Pressable
+      style={styles.button}
       disabled={!request}
-      title="Login Spotify"
       onPress={() => {
         promptAsync();
       }}
-    />
+      >
+      <Text style={styles.text}>Login Spotify</Text>
+    </Pressable>
   );
 }

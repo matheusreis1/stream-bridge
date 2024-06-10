@@ -1,8 +1,11 @@
 import { FlatList } from "react-native"
 import { TrackItem } from "./TrackItem"
-import { ITrack } from "@/types/deezer"
+import { useContext } from "react";
+import { TracksToCreateContext } from "@/context/TracksToCreate";
 
-export const TracksList = ({tracks}: {tracks: ITrack[]}) => {
+export const TracksList = () => {
+  const { tracks } = useContext(TracksToCreateContext);
+
   return (
     <FlatList
       data={tracks}
