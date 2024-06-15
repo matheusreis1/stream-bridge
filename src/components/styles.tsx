@@ -25,6 +25,12 @@ export const styles = StyleSheet.create({
     backgroundColor: 'black',
     margin: 10,
   },
+  buttonDisabled:{
+    backgroundColor: 'gray',
+  },
+  buttonPressed: {
+    backgroundColor: 'gray',
+  },
   text: {
     fontSize: 16,
     lineHeight: 21,
@@ -38,14 +44,6 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: 'black',
-  },
-  textInput: {
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 6,
-    padding: 10,
-    margin: 10,
-    width: '80%'
   },
   header: {
     backgroundColor: 'black',

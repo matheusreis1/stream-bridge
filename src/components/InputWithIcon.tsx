@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, Clipboard } from 'react-native';
+import { View, TextInput, StyleSheet, Clipboard, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export const IconTextInput = ({ initialIconName, alternateIconName, inputValue, placeholder, ...rest }) => {
@@ -18,9 +18,9 @@ export const IconTextInput = ({ initialIconName, alternateIconName, inputValue, 
         value={inputValue}
         {...rest}
       />
-      <TouchableOpacity onPress={copyToClipboard}>
+      <Pressable onPress={copyToClipboard}>
         <Icon name={iconName} size={24} color="gray" style={styles.icon} />
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };

@@ -1,14 +1,21 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Pressable, TextInput, ScrollView, Text, View, TouchableOpacity } from 'react-native';
 import { styles } from '../components/styles';
 import { SpotifyExpoLogin } from '../spotify/Login';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
 import { addTracksToPlaylist, createPlaylist, fetchProfile, getTrack } from '@/services/spotify';
 import { IconTextInput } from '@/components/InputWithIcon';
+import { LabelledTextInput } from '@/components/LabelledTextInput';
+import { TextButton } from '@/components/TextButton';
 
 export default function CreatePlaylistPage() {
+  // TODO: add loading
+  // TODO: add error handling
+
+
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [playlistCreatedUrl, setPlaylistCreatedUrl] = useState('');
+  const [isLoggedIntoSpotify, setIsLoggedIntoSpotify] = useState(false);
   const { tracks, accessToken } = useContext(TracksToCreateContext);
 
   const submitNewPlaylist = async () => {
@@ -29,19 +36,27 @@ export default function CreatePlaylistPage() {
     setPlaylistCreatedUrl(playlistCreated.external_urls.spotify);
   }
 
+  useEffect(() => {
+    setIsLoggedIntoSpotify(!!accessToken);
+  }, [accessToken]);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <TextInput
-        style={styles.textInput}
+      <SpotifyExpoLogin />
+
+      <LabelledTextInput
+        label={'Nome da playlist'}
         value={newPlaylistName}
         onChangeText={setNewPlaylistName}
+        placeholder={'Nome da playlist'}
+        readOnly={!isLoggedIntoSpotify}
       />
 
-      <Pressable style={styles.button} onPress={() => submitNewPlaylist()}>
-        <Text style={styles.text}>Criar</Text>
-      </Pressable>
-
-      <SpotifyExpoLogin />
+      <TextButton
+        label={'Criar'}
+        onPress={() => submitNewPlaylist()}
+        isDisabled={!isLoggedIntoSpotify}
+      />
 
       {playlistCreatedUrl && (
         <IconTextInput

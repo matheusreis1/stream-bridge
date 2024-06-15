@@ -4,8 +4,8 @@ import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, exchangeCodeAsync } from 'expo-auth-session';
 import { Pressable, Text } from 'react-native';
 import * as SecureStore from "expo-secure-store";
-import { styles } from '@/components/styles';
 import { TracksToCreateContext, TracksToCreateProvider } from '@/context/TracksToCreate';
+import { TextButton } from '@/components/TextButton';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -68,14 +68,10 @@ export const SpotifyExpoLogin = () => {
   }, [response]);
 
   return (
-    <Pressable
-      style={styles.button}
-      disabled={!request}
-      onPress={() => {
-        promptAsync();
-      }}
-      >
-      <Text style={styles.text}>Login Spotify</Text>
-    </Pressable>
+    <TextButton
+      label={'Login Spotify'}
+      isDisabled={!request}
+      onPress={() => {promptAsync();}}
+    />
   );
 }

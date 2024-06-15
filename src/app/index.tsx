@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
-import { Pressable, TextInput, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { styles } from '../components/styles';
-import { Link } from 'expo-router';
 import { TracksToCreateProvider } from '@/context/TracksToCreate';
+import { LabelledTextInput } from '@/components/LabelledTextInput';
+import { LinkButton } from '@/components/LinkButton';
 
 export default function HomePage() {
-  const [playlistUrl, setPlaylistUrl] = useState('https://www.deezer.com/us/playlist/8245981802');
+  const [playlistUrl, setPlaylistUrl] = useState('');
 
   return (
-    <TracksToCreateProvider >
+    <TracksToCreateProvider>
       <ScrollView contentContainerStyle={styles.container}>
-        <TextInput 
-          style={styles.textInput} 
-          value={playlistUrl} 
-          onChangeText={setPlaylistUrl} />
-        <Pressable style={styles.button}>
-          <Link href={{pathname: "/tracks", params: {playlistUrl}}} style={styles.text}>Buscar playlist</Link>
-        </Pressable>
+        <LabelledTextInput 
+          label={'URL da playlist'}
+          value={playlistUrl}
+          onChangeText={setPlaylistUrl}
+          placeholder={'https://www.deezer.com/us/playlist/8245981802'}
+        />
+        <LinkButton
+          label={'Buscar playlist'}
+          onPress={() => {}}
+          isDisabled={!playlistUrl}
+          href={{pathname: "/tracks", params: {playlistUrl}}}
+        />
       </ScrollView>
     </TracksToCreateProvider>
   );

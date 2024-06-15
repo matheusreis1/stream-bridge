@@ -1,8 +1,8 @@
+import { LinkButton } from '@/components/LinkButton';
 import { TracksList } from '@/components/TracksList';
 import { styles } from '@/components/styles';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
 import { getDeezerTracks } from '@/services/deezer';
-import { ITrack } from '@/types/deezer';
 import { Link, useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -42,9 +42,16 @@ export default function TracksPage() {
         <Pressable style={styles.button} onPress={() => navigation.goBack()}>
           <Text style={styles.text}>Voltar</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={() => {getTracks()}}>
+
+        <LinkButton
+          label={'Criar playlist'}
+          onPress={() => {getTracks()}}
+          isDisabled={false}
+          href={{pathname: "/create-playlist"}}
+        />
+        {/* <Pressable style={styles.button} onPress={() => {getTracks()}}>
           <Link href={"/create-playlist"} style={styles.text}>Criar playlist</Link>
-        </Pressable>
+        </Pressable> */}
       </View>
     </View>
   )

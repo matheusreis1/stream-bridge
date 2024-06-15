@@ -1,4 +1,4 @@
-import { FlatList } from "react-native"
+import { FlatList, StyleSheet } from "react-native"
 import { TrackItem } from "./TrackItem"
 import { useContext } from "react";
 import { TracksToCreateContext } from "@/context/TracksToCreate";
@@ -15,7 +15,15 @@ export const TracksList = () => {
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
       scrollEnabled={false}
-      style={{width: '100%', padding: 10, height: '20%'}}
+      style={styles.flatList}
     />
   )
 }
+
+const styles = StyleSheet.create({
+  flatList: {
+    width: '100%',
+    padding: 10,
+    height: '20%',
+  }
+});
