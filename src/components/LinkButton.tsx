@@ -1,8 +1,21 @@
 import { Link } from 'expo-router';
 import React from 'react';
-import { Text, StyleSheet, Pressable } from 'react-native';
+import { StyleSheet, Pressable, GestureResponderEvent } from 'react-native';
 
-export const LinkButton = ({ label, onPress, isDisabled, href }) => {
+export interface ILinkButtonProps {
+  label: string;
+  isDisabled: boolean;
+  href: string | Record<string, unknown>;
+  onPress?: () => void;
+}
+
+export const LinkButton = (
+  {
+    label, 
+    onPress, 
+    isDisabled, 
+    href 
+  }: ILinkButtonProps) => {
   return (
     <Pressable
       onPress={onPress}

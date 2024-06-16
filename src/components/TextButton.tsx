@@ -1,7 +1,13 @@
 import React from 'react';
 import { Text, StyleSheet, Pressable } from 'react-native';
 
-export const TextButton = ({ label, onPress, isDisabled }) => {
+export interface ITextButtonProps {
+  label: string;
+  isDisabled: boolean;
+  onPress: () => void;
+}
+
+export const TextButton = ({ label, onPress, isDisabled }: ITextButtonProps) => {
   return (
     <Pressable
       onPress={onPress}

@@ -1,17 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Pressable, TextInput, ScrollView, Text, View, TouchableOpacity } from 'react-native';
-import { styles } from '../components/styles';
 import { SpotifyExpoLogin } from '../spotify/Login';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
 import { addTracksToPlaylist, createPlaylist, fetchProfile, getTrack } from '@/services/spotify';
 import { IconTextInput } from '@/components/InputWithIcon';
 import { LabelledTextInput } from '@/components/LabelledTextInput';
 import { TextButton } from '@/components/TextButton';
+import { ScrollPage } from '@/components/ScrollPage';
 
 export default function CreatePlaylistPage() {
   // TODO: add loading
   // TODO: add error handling
-
 
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [playlistCreatedUrl, setPlaylistCreatedUrl] = useState('');
@@ -41,7 +39,7 @@ export default function CreatePlaylistPage() {
   }, [accessToken]);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollPage>
       <SpotifyExpoLogin />
 
       <LabelledTextInput
@@ -66,6 +64,6 @@ export default function CreatePlaylistPage() {
           placeholder=''
         />
       )}
-    </ScrollView>
+    </ScrollPage>
   );
 }

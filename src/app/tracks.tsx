@@ -3,7 +3,7 @@ import { TracksList } from '@/components/TracksList';
 import { styles } from '@/components/styles';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
 import { getDeezerTracks } from '@/services/deezer';
-import { Link, useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
@@ -49,9 +49,6 @@ export default function TracksPage() {
           isDisabled={false}
           href={{pathname: "/create-playlist"}}
         />
-        {/* <Pressable style={styles.button} onPress={() => {getTracks()}}>
-          <Link href={"/create-playlist"} style={styles.text}>Criar playlist</Link>
-        </Pressable> */}
       </View>
     </View>
   )

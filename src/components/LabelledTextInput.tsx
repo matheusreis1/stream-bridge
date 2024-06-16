@@ -1,7 +1,22 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-export const LabelledTextInput = ({ label, value, onChangeText, placeholder, ...rest }) => {
+export interface ILabbelledTextInputProps {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder: string;
+  readOnly?: boolean;
+}
+
+export const LabelledTextInput = (
+  { 
+    label,
+    value,
+    onChangeText,
+    placeholder,
+    ...rest
+  }: ILabbelledTextInputProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
