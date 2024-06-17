@@ -1,11 +1,8 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri, useAuthRequest, exchangeCodeAsync } from 'expo-auth-session';
-import { Pressable, Text } from 'react-native';
-import * as SecureStore from "expo-secure-store";
-import { TracksToCreateContext, TracksToCreateProvider } from '@/context/TracksToCreate';
 import { TextButton } from '@/components/TextButton';
+import { setAccessToken } from '@/services/acessToken';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -13,12 +10,8 @@ const discovery = {
   authorizationEndpoint: 'https://accounts.spotify.com/authorize',
   tokenEndpoint: 'https://accounts.spotify.com/api/token',
 };
-const AUTH_STORAGE_KEY = 'jwtToken';
 
-export const SpotifyExpoLogin = () => {
-  // const setCachedToken = async (token: string) => SecureStore.setItemAsync(AUTH_STORAGE_KEY, token);
-  const { accessToken, setAccessToken } = React.useContext(TracksToCreateContext);
-  
+export const SpotifyExpoLogin = ({ onLoginSuccess }) => {
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: '2a610295915749f89285d83854787345',
@@ -50,11 +43,8 @@ export const SpotifyExpoLogin = () => {
           discovery
         );
 
-        setAccessToken(exchangeTokenResponse.accessToken);
-
-        // setCachedToken(exchangeTokenResponse.accessToken);
-
-        // setAuthTokens({accessToken: exchangeTokenResponse.accessToken, refreshToken: exchangeTokenResponse.refreshToken});
+        await setAccessToken(exchangeTokenResponse.accessToken);
+        onLoginSuccess(exchangeTokenResponse.accessToken);
       } catch (error) {
         console.error("error", error);
       }

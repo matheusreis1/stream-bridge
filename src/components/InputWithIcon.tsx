@@ -15,6 +15,7 @@ export const IconTextInput = ({ initialIconName, alternateIconName, inputValue, 
       <TextInput
         style={styles.textInput}
         placeholder={placeholder}
+        placeholderTextColor={'#999'}
         value={inputValue}
         {...rest}
       />

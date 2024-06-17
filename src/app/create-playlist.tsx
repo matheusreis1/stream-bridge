@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { SpotifyExpoLogin } from '../spotify/Login';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
 import { addTracksToPlaylist, createPlaylist, fetchProfile, getTrack } from '@/services/spotify';
@@ -6,17 +6,20 @@ import { IconTextInput } from '@/components/InputWithIcon';
 import { LabelledTextInput } from '@/components/LabelledTextInput';
 import { TextButton } from '@/components/TextButton';
 import { ScrollPage } from '@/components/ScrollPage';
+import { Loading } from '@/components/Loading';
+import { getAccessToken } from '@/services/acessToken';
 
 export default function CreatePlaylistPage() {
-  // TODO: add loading
-  // TODO: add error handling
+  const { tracks } = useContext(TracksToCreateContext);
 
+  const [accessToken, setAccessToken] = useState('');
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [playlistCreatedUrl, setPlaylistCreatedUrl] = useState('');
   const [isLoggedIntoSpotify, setIsLoggedIntoSpotify] = useState(false);
-  const { tracks, accessToken } = useContext(TracksToCreateContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitNewPlaylist = async () => {
+    setIsLoading(true);
     const trackNames = tracks.map(track => track.title);
 
     const spotifyUrisPromises = trackNames.map(async (track) => {
@@ -32,15 +35,34 @@ export default function CreatePlaylistPage() {
     await addTracksToPlaylist(accessToken, playlistCreated.id, spotifyUris);
 
     setPlaylistCreatedUrl(playlistCreated.external_urls.spotify);
+    setIsLoading(false);
   }
 
   useEffect(() => {
-    setIsLoggedIntoSpotify(!!accessToken);
-  }, [accessToken]);
+    const getToken = async () => {
+      const token = await getAccessToken();
+      if (token) {
+        setAccessToken(token);
+        setIsLoggedIntoSpotify(!!token);
+      }
+    };
+    
+    getToken();
+  }, []);
+
+  const handleLoginSuccess = (token: string) => {
+    setAccessToken(token);
+  };
 
   return (
     <ScrollPage>
-      <SpotifyExpoLogin />
+      {isLoading && (
+        <Loading
+          message={'Criando playlist...'}
+        />
+      )}
+
+      <SpotifyExpoLogin onLoginSuccess={handleLoginSuccess} />
 
       <LabelledTextInput
         label={'Nome da playlist'}
@@ -56,14 +78,13 @@ export default function CreatePlaylistPage() {
         isDisabled={!isLoggedIntoSpotify}
       />
 
-      {playlistCreatedUrl && (
-        <IconTextInput
-          inputValue={playlistCreatedUrl}
-          initialIconName="copy-all"
-          alternateIconName="check"
-          placeholder=''
-        />
-      )}
+      <IconTextInput
+        inputValue={playlistCreatedUrl}
+        initialIconName="copy-all"
+        alternateIconName="check"
+        placeholder='URL da playlist criada'
+        isDisabled={!playlistCreatedUrl}
+      />
     </ScrollPage>
   );
 }

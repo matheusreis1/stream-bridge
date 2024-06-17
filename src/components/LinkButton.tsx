@@ -1,6 +1,6 @@
 import { Link } from 'expo-router';
 import React from 'react';
-import { StyleSheet, Pressable, GestureResponderEvent } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 
 export interface ILinkButtonProps {
   label: string;
