@@ -1,13 +1,13 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SpotifyExpoLogin } from '../spotify/Login';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
-import { addTracksToPlaylist, createPlaylist, fetchProfile, getTrack } from '@/services/spotify';
 import { IconTextInput } from '@/components/InputWithIcon';
 import { LabelledTextInput } from '@/components/LabelledTextInput';
 import { TextButton } from '@/components/TextButton';
 import { ScrollPage } from '@/components/ScrollPage';
 import { Loading } from '@/components/Loading';
 import { getAccessToken } from '@/services/acessToken';
+import { createSpotifyPlaylist } from '@/services/api';
 
 export default function CreatePlaylistPage() {
   const { tracks } = useContext(TracksToCreateContext);
@@ -22,19 +22,9 @@ export default function CreatePlaylistPage() {
     setIsLoading(true);
     const trackNames = tracks.map(track => track.title);
 
-    const spotifyUrisPromises = trackNames.map(async (track) => {
-      const spotifyTrack = await getTrack(accessToken, track);
-      return spotifyTrack.uri;
-    });
-    const spotifyUris = await Promise.all(spotifyUrisPromises);
+    const playlistCreated = await createSpotifyPlaylist(accessToken, trackNames, newPlaylistName);
 
-    const user = await fetchProfile(accessToken);
-
-    const playlistCreated = await createPlaylist(accessToken, user.id, newPlaylistName);
-
-    await addTracksToPlaylist(accessToken, playlistCreated.id, spotifyUris);
-
-    setPlaylistCreatedUrl(playlistCreated.external_urls.spotify);
+    setPlaylistCreatedUrl(playlistCreated.url);
     setIsLoading(false);
   }
 

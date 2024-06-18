@@ -2,7 +2,7 @@ import { LinkButton } from '@/components/LinkButton';
 import { TracksList } from '@/components/TracksList';
 import { styles } from '@/components/styles';
 import { TracksToCreateContext } from '@/context/TracksToCreate';
-import { getDeezerTracks } from '@/services/deezer';
+import { getDeezerTracks } from '@/services/api';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useContext, useEffect } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -20,7 +20,7 @@ export default function TracksPage() {
   const getTracks = async () => {
     let tracksToInclude = [];
     if (playlistUrl.includes('deezer')) {
-      const code = playlistUrl.split('/').pop();
+      const code = playlistUrl.split('/').pop().split('?')[0];
       tracksToInclude = await getDeezerTracks(code);
     } else if (playlistUrl.includes('spotify')) {
       // Call the function for Spotify here
